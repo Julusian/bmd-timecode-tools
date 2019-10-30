@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27406.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimecodeWriter", "TimecodeWriter\TimecodeWriter.vcxproj", "{F73C9828-4935-489D-A434-04FCEFE3278F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimecodeReader", "TimecodeReader\TimecodeReader.vcxproj", "{826FE284-FC12-4B2E-A255-11911A089627}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimecodeLatencyChecker", "TimecodeLatencyChecker\TimecodeLatencyChecker.vcxproj", "{9CE0D845-DA22-45A2-A06F-373C88EFED99}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioLatencyChecker", "AudioLatencyChecker\AudioLatencyChecker.vcxproj", "{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,14 @@ Global
 		{9CE0D845-DA22-45A2-A06F-373C88EFED99}.Release|x64.Build.0 = Release|x64
 		{9CE0D845-DA22-45A2-A06F-373C88EFED99}.Release|x86.ActiveCfg = Release|Win32
 		{9CE0D845-DA22-45A2-A06F-373C88EFED99}.Release|x86.Build.0 = Release|Win32
+		{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}.Debug|x64.ActiveCfg = Debug|x64
+		{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}.Debug|x64.Build.0 = Debug|x64
+		{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}.Debug|x86.ActiveCfg = Debug|Win32
+		{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}.Debug|x86.Build.0 = Debug|Win32
+		{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}.Release|x64.ActiveCfg = Release|x64
+		{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}.Release|x64.Build.0 = Release|x64
+		{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}.Release|x86.ActiveCfg = Release|Win32
+		{FEEEBD3A-BCEE-4B35-B321-8945EACA5D7B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
