@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <style type="text/css">
+          
+            #mydiv {
+                position: absolute;
+                float: left;
+                top: 0;
+                left: 0;
+
+                background-color: #ffffff;
+                width: 100vw;
+            }
+
+        </style>
+        
+    </head>
+    <body>
+        <div id="mydiv"></div>
+
+        <script type="text/javascript">
+            let lastTick = 0
+            let lastHeight = 0
+
+            console.log('running')
+
+            const tick = () => {
+                window.requestAnimationFrame(tick)
+
+                const newTick = Date.now()
+                const delta = newTick - lastTick
+                lastTick = newTick
+
+                // console.log('RAF ' + delta)
+
+
+                lastHeight += 1
+                if (lastHeight > window.innerHeight) {
+                    lastHeight = 0
+                }
+
+                document.querySelector('#mydiv').style.height = `${lastHeight}px`
+
+            }
+
+            window.requestAnimationFrame(tick)
+        </script>
+    </body>
+</html>
+
+
+<!-- play 1-10 [html] white-fill.html -->
