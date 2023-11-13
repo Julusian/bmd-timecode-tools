@@ -32,6 +32,9 @@
     <ClCompile Include="..\Common\platform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DeckLinkAPI_i.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\SDK\Win\include\DeckLinkAPI.idl">
