@@ -105,10 +105,13 @@ static com_iface_ptr<I> iface_cast(const com_ptr<T>& ptr, bool optional = false)
 class InputCallback : public IDeckLinkInputCallback
 {
     int index_;
+    int runMode_;
 public:
 
 
-    InputCallback(int index) : index_(index)
+    InputCallback(int index, int runMode)
+        : index_(index)
+        , runMode_(runMode)
     {
     }
 
@@ -137,45 +140,89 @@ public:
         return S_OK;
     }
 
+
+    int countLinesInData(IDeckLinkVideoInputFrame* video) {
+        uint8_t* bytes;
+        if (S_OK == video->GetBytes((void**)&bytes)) {
+            auto width = video->GetWidth();
+            auto height = video->GetHeight();
+            auto rowBytes = video->GetRowBytes();
+
+            int newLineCount = 0;
+
+            for (size_t i = 0; i < height; i++)
+            {
+                size_t offset = (rowBytes * i) + 1;
+                uint8_t value = bytes[offset];
+
+                if (value > 100) {
+                    newLineCount++;
+                }
+                else {
+                    break;
+                }
+            }
+
+            return newLineCount;
+        }
+        else {
+            return 0;
+        }
+    }
+
     int lastLineCount = -1;
+    int frameCount = 0;
+    int totalFrameCount = 0;
 
     virtual HRESULT STDMETHODCALLTYPE VideoInputFrameArrived(IDeckLinkVideoInputFrame* video, IDeckLinkAudioInputPacket* audio)
     {
-        //if (video->GetFlags() & bmdFrameFlagFlipVertical)       
-                uint8_t* bytes;
-                if (S_OK == video->GetBytes((void**)&bytes)) {
-                    auto width = video->GetWidth();
-                    auto height = video->GetHeight();
-                    auto rowBytes = video->GetRowBytes();
-                  
-                    int newLineCount = 0;
+        if (runMode_ == 1) {
+            totalFrameCount++;
 
-                    for (size_t i = 0; i < height; i++)
-                    {
-                        size_t offset = (rowBytes * i) + 1;
-                        uint8_t value = bytes[offset];
+            int newLineCount = countLinesInData(video);
 
-                        if (value > 100) {
-                            newLineCount++;
-                        }
-                        else {
-                            break;
-                        }
-                    }
+            int height = video->GetHeight();
+            int lineDelta = newLineCount - lastLineCount;
+            if (lineDelta < -height / 2) lineDelta += height;
 
-                    if (newLineCount == lastLineCount + 2) {
-                        // All good
-                    }
-                    else if (newLineCount == 0 && lastLineCount == height) {
-                         // It wrapped
-                    }
-                    else {
-                        printf("Line Count jumped from %3d to %3d \n",lastLineCount, newLineCount);
-                    }
+            if (lineDelta == 2) {
+                // All good
+            }
+            else {
+                printf("%3d jumped from %3d to %3d \n", totalFrameCount, lastLineCount, newLineCount);
+            }
 
-                    lastLineCount = newLineCount;
+            lastLineCount = newLineCount;
 
+            
+        }
+        else if (runMode_ == 2) {
+            totalFrameCount++;
+            int newLineCount = countLinesInData(video);
+
+            int height = video->GetHeight();
+            int lineDelta = newLineCount - lastLineCount;
+            if (lineDelta < -height / 2) lineDelta += height;
+
+            if (newLineCount == lastLineCount) {
+                frameCount++;
+            } else if (lineDelta == 1) {
+                if (frameCount != 23 && frameCount != 24 && frameCount != 25) {
+                    printf("%3d incremented after %3d\n", totalFrameCount, frameCount);
                 }
+                frameCount = 0;
+            }
+            else {
+                printf("%3d jumped from %3d to %3d after %3d frames\n", totalFrameCount, lastLineCount, newLineCount, frameCount);
+                    frameCount = 0;
+            }
+
+            lastLineCount = newLineCount;
+
+        }
+        else {
+            return S_FALSE;
+        }
 
               
 
@@ -219,6 +266,13 @@ int main(int argc, const char* argv[])
     std::cout << "Specify input device\n";
     std::cin >> inputIndex;
 
+    int runMode;
+    std::cout << "Specify mode\n" 
+        << "1) Fast fill\n" 
+        << "2) Slow fill\n";
+    std::cin >> runMode;
+
+
     // Create an IDeckLinkIterator object to enumerate all DeckLink cards in the system
     result = GetDeckLinkIterator(&deckLinkIterator);
     if (result != S_OK)
@@ -230,7 +284,7 @@ int main(int argc, const char* argv[])
 
     // now do input
     decklink_ = get_device(inputIndex);
-    cb = std::make_shared<InputCallback>(inputIndex);
+    cb = std::make_shared<InputCallback>(inputIndex, runMode);
 
     BSTR name2;
     decklink_->GetDisplayName(&name2);
